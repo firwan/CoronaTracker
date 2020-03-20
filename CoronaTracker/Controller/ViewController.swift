@@ -7,12 +7,28 @@
 //
 
 import UIKit
+import Foundation
+import SwiftyJSON
+import Alamofire
 
 class ViewController: UIViewController {
 
+    
+    @IBAction func buttonPressed(_ sender: UIButton) {
+    }
+    
+    @IBAction func countryNameTextField(_ sender: UITextField) {
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //
     }
 
 

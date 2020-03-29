@@ -13,6 +13,12 @@ import SwiftyJSON
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var locationHome: UILabel!
+    @IBOutlet weak var numberOfInfected: UILabel!
+    @IBOutlet weak var numberOfDeath: UILabel!
+    @IBOutlet weak var numberOfCured: UILabel!
+    
+    
     @IBAction func buttonPressed(_ sender: UIButton) {
     }
     
@@ -30,9 +36,27 @@ class ViewController: UIViewController {
         
         let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Malaysia", headers: headers).responseJSON { respond in
             debugPrint(respond)
+            if respond.result.isSuccess {
+                print("#####Success get data#####")
+                
+                let dataJSON : JSON = JSON(respond.result.value!)
+                print(dataJSON)
+                
+                self.locationHome.text =  dataJSON["data"]["covid19Stats"][0]["country"].stringValue
+                self.numberOfInfected.text = String(dataJSON["data"]["covid19Stats"][0]["confirmed"].intValue)
+                self.numberOfDeath.text = String(dataJSON["data"]["covid19Stats"][0]["deaths"].intValue)
+                self.numberOfCured.text = String(dataJSON["data"]["covid19Stats"][0]["recovered"].intValue)
+                
+                //print(dataJSON[""])
+                //self.processCoronaData(json: dataJSON)
+            }
         }
         debugPrint(request)
         
+    }
+    
+    func processCoronaData(json : JSON){
+        //if let
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

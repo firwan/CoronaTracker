@@ -15,12 +15,17 @@ import CoreLocation
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
+    var currentCountry : String = ""
     
     //========Constant for Google Geocoding========
     // Sample url : https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=API_KEY
     // Parameters : latlng & key[GMAP_API_KEY]
     let GMAP_API_KEY : String = "AIzaSyDTbednIGfvKoSEt0jDX68QxRBJIeCYdbc"
     let GMAP_URL : String = "https://maps.googleapis.com/maps/api/geocode/json"
+    
+    //========Constant for Covid-19========
+    let COVID19_URL : String = "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats"
+    
     
     @IBOutlet weak var locationHome: UILabel!
     @IBOutlet weak var numberOfInfected: UILabel!
@@ -49,11 +54,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             "x-rapidapi-key": "83d0c40c36msh3884d468151c6eep107c2bjsnd86081dbb941"
         ]
         
-        let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Malaysia", headers: headers).responseJSON { respond in
+        
+
+        let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=US", headers: headers).responseJSON { respond in
             //debugPrint(respond)
+           
             if respond.result.isSuccess {
                 print("#####Success get data#####")
-                
+                 print(self.currentCountry)
                 let dataJSON : JSON = JSON(respond.result.value!)
                 print(dataJSON)
                 
@@ -81,7 +89,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 print("*****GOT JSON LOCATION DATA******")
                 
                 let locationJSON : JSON = JSON(respond.result.value!)
-                print(locationJSON)
+                self.currentCountry =  locationJSON["results"][0]["address_components"][7]["short_name"].stringValue
             }
             else {
                 print(respond.result.error!)

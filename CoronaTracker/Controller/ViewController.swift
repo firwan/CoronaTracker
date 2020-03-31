@@ -34,7 +34,7 @@ class ViewController: UIViewController {
             "x-rapidapi-key": "83d0c40c36msh3884d468151c6eep107c2bjsnd86081dbb941"
         ]
         
-        let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Malaysia", headers: headers).responseJSON { respond in
+        let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=US", headers: headers).responseJSON { respond in
             debugPrint(respond)
             if respond.result.isSuccess {
                 print("#####Success get data#####")
@@ -42,10 +42,21 @@ class ViewController: UIViewController {
                 let dataJSON : JSON = JSON(respond.result.value!)
                 print(dataJSON)
                 
+                //Totalling num array of JSON data
+                var numberInfected = 0
+                var numberDeath = 0
+                var numberCured = 0
+                let totalConfirmed = dataJSON["data"]["covid19Stats"].arrayValue
+                for i in 0..<totalConfirmed.count {
+                    numberInfected = numberInfected + dataJSON["data"]["covid19Stats"][i]["confirmed"].intValue
+                    numberDeath = numberDeath + dataJSON["data"]["covid19Stats"][i]["deaths"].intValue
+                    numberCured = numberCured + dataJSON["data"]["covid19Stats"][0]["recovered"].intValue
+                }
+                
                 self.locationHome.text =  dataJSON["data"]["covid19Stats"][0]["country"].stringValue
-                self.numberOfInfected.text = String(dataJSON["data"]["covid19Stats"][0]["confirmed"].intValue)
-                self.numberOfDeath.text = String(dataJSON["data"]["covid19Stats"][0]["deaths"].intValue)
-                self.numberOfCured.text = String(dataJSON["data"]["covid19Stats"][0]["recovered"].intValue)
+                self.numberOfInfected.text = String(numberInfected)
+                self.numberOfDeath.text = String(numberDeath)
+                self.numberOfCured.text = String(numberCured)
                 
                 //print(dataJSON[""])
                 //self.processCoronaData(json: dataJSON)

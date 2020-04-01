@@ -34,15 +34,15 @@ class ViewController: UIViewController {
             "x-rapidapi-key": "83d0c40c36msh3884d468151c6eep107c2bjsnd86081dbb941"
         ]
         
-        let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=US", headers: headers).responseJSON { respond in
-            debugPrint(respond)
+        Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Malaysia", headers: headers).responseJSON { respond in
+            //debugPrint(respond)
             if respond.result.isSuccess {
                 print("#####Success get data#####")
                 
                 let dataJSON : JSON = JSON(respond.result.value!)
-                print(dataJSON)
+                //print(dataJSON)
                 
-                //Totalling num array of JSON data
+                //===========Totalling num array of JSON data============
                 var numberInfected = 0
                 var numberDeath = 0
                 var numberCured = 0
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
                 for i in 0..<totalConfirmed.count {
                     numberInfected = numberInfected + dataJSON["data"]["covid19Stats"][i]["confirmed"].intValue
                     numberDeath = numberDeath + dataJSON["data"]["covid19Stats"][i]["deaths"].intValue
-                    numberCured = numberCured + dataJSON["data"]["covid19Stats"][0]["recovered"].intValue
+                    numberCured = numberCured + dataJSON["data"]["covid19Stats"][i]["recovered"].intValue
                 }
                 
                 self.locationHome.text =  dataJSON["data"]["covid19Stats"][0]["country"].stringValue
@@ -62,8 +62,7 @@ class ViewController: UIViewController {
                 //self.processCoronaData(json: dataJSON)
             }
         }
-        debugPrint(request)
-        
+        //debugPrint(request)
     }
     
     func processCoronaData(json : JSON){

@@ -15,7 +15,7 @@ import CoreLocation
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
-    var currentCountry : String = ""
+    var currentCountry : String = "Malaysia"
     
     //========Constant for Google Geocoding========
     // Sample url : https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=API_KEY
@@ -39,6 +39,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBAction func countryNameTextField(_ sender: UITextField) {
     }
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -54,9 +56,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             "x-rapidapi-key": "83d0c40c36msh3884d468151c6eep107c2bjsnd86081dbb941"
         ]
         
-        
-
-        let request = Alamofire.request("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=US", headers: headers).responseJSON { respond in
+        let params : [String : String] = ["country" : currentCountry]
+        print("*****************")
+        print(currentCountry)
+        let request = Alamofire.request(COVID19_URL, parameters : params ,headers: headers).responseJSON { respond in
             //debugPrint(respond)
            
             if respond.result.isSuccess {
@@ -78,26 +81,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //
-    }
-    
-    func getCountryName(url : String, parameters : [String : String]) {
-        Alamofire.request(url, method : .get, parameters : parameters).responseJSON {
-            respond in
-            if respond.result.isSuccess {
-                print("*****GOT JSON LOCATION DATA******")
-                
-                let locationJSON : JSON = JSON(respond.result.value!)
-                self.currentCountry =  locationJSON["results"][0]["address_components"][7]["short_name"].stringValue
-            }
-            else {
-                print(respond.result.error!)
-                self.locationHome.text = "Network Error!"
-            }
-        }
-    }
-
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations[locations.count - 1]
         if location.horizontalAccuracy > 0 {
@@ -110,11 +93,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             let latitude = String(location.coordinate.latitude)
             
             let params : [String : String] = ["latlng" : "\(latitude),\(longitude)", "key" : GMAP_API_KEY]
-            
             getCountryName(url: GMAP_URL, parameters: params)
         }
     }
-
+    
+    func getCountryName(url : String, parameters : [String : String]) {
+        Alamofire.request(url, method : .get, parameters : parameters).responseJSON {
+            respond in
+            if respond.result.isSuccess {
+                print("*****GOT JSON LOCATION DATA******")
+                
+                let locationJSON : JSON = JSON(respond.result.value!)
+                self.currentCountry =  locationJSON["results"][0]["address_components"][7]["short_name"].stringValue
+                print(locationJSON)
+                print(self.currentCountry)
+            }
+            else {
+                print(respond.result.error!)
+                self.locationHome.text = "Network Error!"
+            }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //
+    }
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
         locationHome.text = "Error loading location!"

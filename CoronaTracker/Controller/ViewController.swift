@@ -29,6 +29,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+       
+    }
+    
+    func processCoronaData() {
+        
         let headers : HTTPHeaders = [
             "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
             "x-rapidapi-key": "83d0c40c36msh3884d468151c6eep107c2bjsnd86081dbb941"
@@ -63,10 +68,6 @@ class ViewController: UIViewController {
             }
         }
         //debugPrint(request)
-    }
-    
-    func processCoronaData(json : JSON){
-        //if let
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
